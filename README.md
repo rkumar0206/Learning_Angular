@@ -209,5 +209,154 @@ export class AppModule { }
 
 ```
 
+---
 
+## Routing components
 
+**Step 1 : Modify the `app.component.html` module**
+![image](https://user-images.githubusercontent.com/63965898/191582295-62889ca3-96bc-48fd-b2ac-089082d522b2.png)
+
+**Step 2 : Add routes in app-routing.module.ts** 
+```ts
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { ErrorComponent } from './error/error.component';
+import { LoginComponent } from './login/login.component';
+import { WelcomeComponent } from './welcome/welcome.component';
+
+const routes: Routes = [
+  { path: '', component: LoginComponent }, // at root path show the LoginComponent
+  { path: 'login', component: LoginComponent },
+  { path: 'welcome', component: WelcomeComponent },
+  { path: '**', component: ErrorComponent } // all the paths other than defined should route to ErrorComponent
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+
+```
+
+### Routing from LoginComponent to WelcomeComponent
+
+#### login.component.ts
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
+})
+export class LoginComponent implements OnInit {
+
+  username = "rtb";
+  password = '';
+  errorMessage = 'Invalid Credentials';
+
+  isInvalidLogin = false;
+
+  // Dependecy Injection
+  // For navigating from Login to Welcome page we need the object of Router
+  // For getting the router object we will just declare that in the constructor and it will be availbale to use as Angular will inject it
+  constructor(private router : Router) { }
+
+  ngOnInit(): void {
+  }
+
+  handleLogin() {
+
+    if(this.username === 'rtb' && this.password === '12345')
+    {
+      this.isInvalidLogin = false;
+
+      this.router.navigate(['welcome']);
+
+    }else {
+      this.isInvalidLogin = true;
+    }
+  }
+}
+```
+
+### Adding Route Paramater to `WelcomeComponent`
+
+#### app-routing.module.ts
+
+```ts
+....
+....
+const routes: Routes = [
+  { path: '', component: LoginComponent }, // at root path show the LoginComponent
+  { path: 'login', component: LoginComponent },
+  { path: 'welcome/:userName', component: WelcomeComponent }, // Welcome component will take a paramter i.e userName
+  { path: '**', component: ErrorComponent } // all the paths other than defined should route to ErrorComponent
+];
+....
+....
+```
+
+Modify app-routing.modules.ts for adding parameter to the path of welcome component
+
+#### welcome.component.ts
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-welcome',
+  templateUrl: './welcome.component.html',
+  styleUrls: ['./welcome.component.css']
+})
+// this component implements an interface called OnInit, in which there is a mehtod called
+// ngOnInit() which will be called as soon as this component is initiaized
+export class WelcomeComponent implements OnInit {
+
+  userName = ''
+
+  // ActivatedRoute
+  constructor(private route : ActivatedRoute) { }
+
+  ngOnInit(): void {
+
+    this.userName = this.route.snapshot.params['userName'];
+  }
+}
+
+```
+
+#### welcome.component.html
+
+```html
+<p>Welcome {{userName}} to our TODO app...</p>
+
+```
+
+#### login.component.ts
+
+```ts
+....
+  ngOnInit(): void {
+  }
+
+  handleLogin() {
+
+    if(this.username === 'rtb' && this.password === '12345')
+    {
+      this.isInvalidLogin = false;
+
+      this.router.navigate(['welcome', this.username]);
+
+    }else {
+      this.isInvalidLogin = true;
+    }
+  }
+....
+```
+
+Passing username from LoginComponent to Welcom Component using the path parameter.
