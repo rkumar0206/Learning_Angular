@@ -120,3 +120,94 @@ export class WelcomeComponent implements OnInit {
 Now to include this component, we can take the selector name and add it to the `app.component.html` file as 
 ![image](https://user-images.githubusercontent.com/63965898/191475137-3de45155-96c2-4272-8964-a4a9dc13e64d.png)
 
+
+---
+
+## Generating LoginComponent and handling events
+
+Step 1 : Generate login component using `ng generate component login`
+![image](https://user-images.githubusercontent.com/63965898/191482171-d1fe9c24-81be-4ecc-880f-3c85de7f1db7.png)
+
+Step 2 : For now removing everything from `app.component.html` file and just including the `app-login` component.
+
+
+Step 3 : Add username and password fields in LoginComponent and adding handleLogin() method
+
+#### login.component.ts
+```ts
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
+})
+export class LoginComponent implements OnInit {
+
+  username = "rtb";
+  password = '';
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+  handleLogin() {
+    console.log(this.username);
+  }
+}
+```
+
+Step 4 : Create login form in `login.component.html`
+
+#### login.component.html
+```html
+Username : <input type="text" name="username" value="{{username}}" [(ngModel)]="username">
+<br><br>
+Password : <input type="password" name="password" value="{{password}}">
+
+<button (click)="handleLogin()">Login</button>
+```
+
+Here we are using interpolation for getting the default value of the username and password.
+Also we are using `[(ngModel)]=username` which is used to change the value of the username in login.component.ts
+
+Step 5 : Adding FormsModule to `app.modules.ts` for using `ngModel` in our html file
+
+For using the ngModel in our html file we must include FormsModule in app.modules.ts so that we can bind this property to input element.
+If we don't include FormsModule in app.modules.ts then we will get below error.
+
+![image](https://user-images.githubusercontent.com/63965898/191487685-df3047ef-4e8d-442c-aa18-0236e35c4b49.png)
+
+#### app.modules.ts
+
+```ts
+  import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { WelcomeComponent } from './welcome/welcome.component';
+import { LoginComponent } from './login/login.component';
+import { FormsModule } from '@angular/forms';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    WelcomeComponent,
+    LoginComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+```
+
+
+
