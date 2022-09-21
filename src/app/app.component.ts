@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 // this component decoration makes this AppCompnent as component.
-// Each component contains a template, stile and code (typescript)
+// Each component contains a template, style and code (typescript)
 @Component({
   selector: 'app-root',   // this is defined in index.html file
   templateUrl: './app.component.html',  // location of template file
