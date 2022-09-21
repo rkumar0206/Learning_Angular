@@ -360,3 +360,89 @@ export class WelcomeComponent implements OnInit {
 ```
 
 Passing username from LoginComponent to Welcom Component using the path parameter.
+
+---
+
+## Creating ListTodos component
+
+**Step 1: Create ListTodos component using `ng generate component listTodos`**
+
+**Step 2 : Add route to LoginComponent in `app-routing.modules.ts`**
+
+#### app-routing.modules.ts
+
+```ts
+....
+const routes: Routes = [
+  { path: '', component: LoginComponent }, // at root path show the LoginComponent
+  { path: 'login', component: LoginComponent },
+  { path: 'welcome/:userName', component: WelcomeComponent }, // Welcome component will take a paramter i.e userName
+  { path: 'todos', component: ListTodosComponent },
+  { path: '**', component: ErrorComponent } // all the paths other than defined should route to ErrorComponent
+];
+....
+```
+
+#### list-todos.component.ts
+
+```ts
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-list-todos',
+  templateUrl: './list-todos.component.html',
+  styleUrls: ['./list-todos.component.css']
+})
+export class ListTodosComponent implements OnInit {
+
+  todos = [
+
+    {id : 1, description : 'Do Lunch'},
+    {id : 2, description : 'Learn Angular'},
+    {id : 3, description : 'Give the test in Spring boot and Angular'},
+    {id : 4, description : 'Prepare for MTECH exams'},
+  ];
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+```
+
+#### list-todos.component.html
+
+```html
+<table border="1">
+
+    <thead>
+
+        <tr>
+            <td>id</td>
+            <td>description</td>
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        <tr *ngFor="let todo of todos">
+
+            <td>{{todo.id}}</td>
+            <td>{{todo.description}}</td>
+        </tr>
+
+    </tbody>
+
+
+</table>
+
+```
+
+Here we are using `ngFor` directive to use for loop and load the items of the list.
+
+![image](https://user-images.githubusercontent.com/63965898/191592221-b16b3834-ade0-4cdb-9a2e-46875857d157.png)
+
+
