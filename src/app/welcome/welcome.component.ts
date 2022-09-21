@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-welcome',
@@ -9,8 +10,13 @@ import { Component, OnInit } from '@angular/core';
 // ngOnInit() which will be called as soon as this component is initiaized
 export class WelcomeComponent implements OnInit {
 
-  constructor() { }
+  userName = ''
+
+  // ActivatedRoute
+  constructor(private route : ActivatedRoute) { }
 
   ngOnInit(): void {
+
+    this.userName = this.route.snapshot.params['userName'];
   }
 }

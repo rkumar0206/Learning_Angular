@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
     {
       this.isInvalidLogin = false;
 
-      this.router.navigate(['welcome']);
+      this.router.navigate(['welcome', this.username]);
 
     }else {
       this.isInvalidLogin = true;

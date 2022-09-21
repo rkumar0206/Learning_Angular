@@ -7,7 +7,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
 const routes: Routes = [
   { path: '', component: LoginComponent }, // at root path show the LoginComponent
   { path: 'login', component: LoginComponent },
-  { path: 'welcome', component: WelcomeComponent },
+  { path: 'welcome/:userName', component: WelcomeComponent }, // Welcome component will take a paramter i.e userName
   { path: '**', component: ErrorComponent } // all the paths other than defined should route to ErrorComponent
 ];
 
