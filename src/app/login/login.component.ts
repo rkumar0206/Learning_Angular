@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,10 @@ export class LoginComponent implements OnInit {
 
   isInvalidLogin = false;
 
-  constructor() { }
+  // Dependecy Injection
+  // For navigating from Login to Welcome page we need the object of Router
+  // For getting the router object we will just declare that in the constructor and it will be availbale to use as Angular will inject it
+  constructor(private router : Router) { }
 
   ngOnInit(): void {
   }
@@ -23,6 +27,9 @@ export class LoginComponent implements OnInit {
     if(this.username === 'rtb' && this.password === '12345')
     {
       this.isInvalidLogin = false;
+
+      this.router.navigate(['welcome']);
+
     }else {
       this.isInvalidLogin = true;
     }
