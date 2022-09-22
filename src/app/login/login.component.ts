@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { HarcodedAuthenticationServiceService } from '../service/harcoded-authentication-service.service';
 
 @Component({
   selector: 'app-login',
@@ -17,14 +18,14 @@ export class LoginComponent implements OnInit {
   // Dependecy Injection
   // For navigating from Login to Welcome page we need the object of Router
   // For getting the router object we will just declare that in the constructor and it will be availbale to use as Angular will inject it
-  constructor(private router : Router) { }
+  constructor(private router : Router, private hardcodeAuthenticationService : HarcodedAuthenticationServiceService) { }
 
   ngOnInit(): void {
   }
 
   handleLogin() {
 
-    if(this.username === 'rtb' && this.password === '12345')
+    if(this.hardcodeAuthenticationService.authenticate(this.username, this.password))
     {
       this.isInvalidLogin = false;
 
