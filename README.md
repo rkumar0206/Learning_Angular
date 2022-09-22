@@ -532,3 +532,86 @@ export class ListTodosComponent implements OnInit {
 
 ![image](https://user-images.githubusercontent.com/63965898/191671622-305a89cc-ea4a-4ab4-b970-a03b1b1c7a0e.png)
 
+---
+
+## Adding Hardcoded Authentication Service
+
+For adding a service class in the Angular we can use the ng command `ng generate service FOLDER/SERVICE_NAME`
+
+![image](https://user-images.githubusercontent.com/63965898/191833419-0911be9c-e73e-4583-b573-bbc26336def1.png)
+
+The above command will create a HardcodedAuthentiationService class in the service folder.
+
+#### harcoded-authentication-service.service.ts
+
+```ts
+import { Injectable } from '@angular/core';
+
+// @Injectable makes this class available for depedency injection, angular will inject it wherever we want the instance of
+// this service class
+@Injectable({
+  providedIn: 'root'
+})
+export class HarcodedAuthenticationServiceService {
+
+  constructor() { }
+
+  authenticate(username : String, password : String) {
+
+    if (username === 'rtb' && password === '12345') {
+      return true
+    }
+      return false
+  }
+}
+
+```
+
+We will use this service to authenticate user, earlier the logic was inside the `LoginComponent`.
+So moving the logic to the AuthenticationService and injecting the service in LoginComponent.
+
+#### login.component.ts
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { HarcodedAuthenticationServiceService } from '../service/harcoded-authentication-service.service';
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
+})
+export class LoginComponent implements OnInit {
+
+  username = "rtb";
+  password = '';
+  errorMessage = 'Invalid Credentials';
+
+  isInvalidLogin = false;
+
+  // Dependecy Injection
+  // For navigating from Login to Welcome page we need the object of Router
+  // For getting the router object we will just declare that in the constructor and it will be availbale to use as Angular will inject it
+  constructor(private router : Router, private hardcodeAuthenticationService : HarcodedAuthenticationServiceService) { }
+
+  ngOnInit(): void {
+  }
+
+  handleLogin() {
+
+    if(this.hardcodeAuthenticationService.authenticate(this.username, this.password))
+    {
+      this.isInvalidLogin = false;
+
+      this.router.navigate(['welcome', this.username]);
+
+    }else {
+      this.isInvalidLogin = true;
+    }
+  }
+
+}
+
+```
+
