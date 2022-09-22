@@ -445,4 +445,19 @@ Here we are using `ngFor` directive to use for loop and load the items of the li
 
 ![image](https://user-images.githubusercontent.com/63965898/191592221-b16b3834-ade0-4cdb-9a2e-46875857d157.png)
 
+---
+
+## Linking Todos Component with Welcome Component 
+
+Now we want that a link should be shown in welcome page which navigate to the todos page.
+
+Modify the `welcome.component.html` as below
+
+```html
+<div>Welcome {{userName}} to our TODO app...</div>
+
+<div>You can manage your todos <a routerLink="/todos">here</a></div>
+```
+Here we are using `routerLink` directive to navigate to todos page.
+
 
