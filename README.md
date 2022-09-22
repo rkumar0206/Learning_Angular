@@ -460,4 +460,75 @@ Modify the `welcome.component.html` as below
 ```
 Here we are using `routerLink` directive to navigate to todos page.
 
+---
+
+## Creating class for Todo
+
+Earlier we created simple object to add todos to the list. Let's refactor that and use a `Todo` class.
+
+Modify the `list-todos.component.ts`
+
+#### list-todos.component.ts
+
+```ts
+import { Component, OnInit } from '@angular/core';
+
+export class Todo {
+
+  constructor(
+    public id : Number,
+    public description : String,
+    public isCompleted : Boolean,
+    public targetDate : Date
+  ) {}
+}
+
+@Component({
+  selector: 'app-list-todos',
+  templateUrl: './list-todos.component.html',
+  styleUrls: ['./list-todos.component.css']
+})
+export class ListTodosComponent implements OnInit {
+
+  todos = [
+    new Todo(1, 'Learn Angular', false, new Date()),
+    new Todo(2, 'Give the test in Spring boot and Angular', false, new Date()),
+    new Todo(3, 'Prepare for MTECH exams', false, new Date()),
+  ];
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+}
+```
+#### list-todos.component.html
+
+```html
+<table border="1">
+
+    <thead>
+
+        <tr>
+            <th>Description</th>
+            <th>Target Date</th>
+            <th>isCompleted?</th>
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        <tr *ngFor="let todo of todos">
+            <td>{{todo.description}}</td>
+            <td>{{todo.targetDate | date | uppercase}}</td> <!--the pipe (|) character is used to add formatting to the text in angular-->
+            <td>{{todo.isCompleted}}</td>
+        </tr>
+
+    </tbody>
+</table>
+
+```
+
+![image](https://user-images.githubusercontent.com/63965898/191671622-305a89cc-ea4a-4ab4-b970-a03b1b1c7a0e.png)
 
