@@ -755,3 +755,80 @@ export class LogoutComponent implements OnInit {
 
 </div>
 ```
+
+---
+
+## Implementing RouterGauardService
+
+As of now user can directly go to todos / welcome / logout page without authorization. He can just write url path and he will be navigated to that specific page without authentication.
+
+To resolve this we need to Add one RouterGaurdService which implement `CanActivate` class.
+
+Generate A RouterGaurdSerivce using `ng generate service service/RouterGaurd`
+
+![image](https://user-images.githubusercontent.com/63965898/192040483-da710672-3619-450d-a9f3-324df250a52f.png)
+
+#### router-gaurd.service.ts
+
+```ts
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Observable } from 'rxjs';
+import { HarcodedAuthenticationServiceService } from './harcoded-authentication-service.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class RouterGaurdService implements CanActivate {
+
+  constructor(private harcodedAuthenticationService: HarcodedAuthenticationServiceService,
+    private router : Router
+    ) { }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+
+    if (this.harcodedAuthenticationService.isUserLoggedIn()) { return true; }
+
+    this.router.navigate(['/login']); // before returning false we can navigate user to login component
+
+    return false;
+  }
+}
+
+```
+
+#### app-routing.module.ts
+
+```ts
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { ErrorComponent } from './error/error.component';
+import { ListTodosComponent } from './list-todos/list-todos.component';
+import { LoginComponent } from './login/login.component';
+import { LogoutComponent } from './logout/logout.component';
+import { RouterGaurdService } from './service/router-gaurd.service';
+import { WelcomeComponent } from './welcome/welcome.component';
+
+const routes: Routes = [
+  { path: '', component: LoginComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'welcome/:userName', component: WelcomeComponent, canActivate : [RouterGaurdService]}, 
+  { path: 'todos', component: ListTodosComponent, canActivate : [RouterGaurdService] },
+  { path: 'logout', component: LogoutComponent, canActivate : [RouterGaurdService] },
+  { path: '**', component: ErrorComponent } // all the paths other than defined should route to ErrorComponent, Also this should always be placed below of all routes
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+
+```
+
+---
+
+
+
+
+
