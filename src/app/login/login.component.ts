@@ -9,7 +9,7 @@ import { HarcodedAuthenticationServiceService } from '../service/harcoded-authen
 })
 export class LoginComponent implements OnInit {
 
-  username = "rtb";
+  username = 'rtb';
   password = '';
   errorMessage = 'Invalid Credentials';
 
