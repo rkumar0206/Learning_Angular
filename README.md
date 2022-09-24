@@ -828,7 +828,7 @@ export class AppRoutingModule { }
 
 ---
 
-# User HttpClient to call external Service
+# Using HttpClient to call external Service
 
 In this example we will just call a hello world service and show the response in the welocom.component.ts.
 
