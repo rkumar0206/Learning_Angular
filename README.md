@@ -1,4 +1,4 @@
-## Todo
+# Todo
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.3.
 
@@ -29,7 +29,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ---
 
-## Components
+# Components
 https://angular.io/api/core/Component#description
 
 ```ts
@@ -123,7 +123,7 @@ Now to include this component, we can take the selector name and add it to the `
 
 ---
 
-## Generating LoginComponent and handling events
+# Generating LoginComponent and handling events
 
 Step 1 : Generate login component using `ng generate component login`
 ![image](https://user-images.githubusercontent.com/63965898/191482171-d1fe9c24-81be-4ecc-880f-3c85de7f1db7.png)
@@ -211,7 +211,7 @@ export class AppModule { }
 
 ---
 
-## Routing components
+# Routing components
 
 **Step 1 : Modify the `app.component.html` module**
 ![image](https://user-images.githubusercontent.com/63965898/191582295-62889ca3-96bc-48fd-b2ac-089082d522b2.png)
@@ -363,7 +363,7 @@ Passing username from LoginComponent to Welcom Component using the path paramete
 
 ---
 
-## Creating ListTodos component
+# Creating ListTodos component
 
 **Step 1: Create ListTodos component using `ng generate component listTodos`**
 
@@ -447,7 +447,7 @@ Here we are using `ngFor` directive to use for loop and load the items of the li
 
 ---
 
-## Linking Todos Component with Welcome Component 
+# Linking Todos Component with Welcome Component 
 
 Now we want that a link should be shown in welcome page which navigate to the todos page.
 
@@ -534,7 +534,7 @@ export class ListTodosComponent implements OnInit {
 
 ---
 
-## Adding Hardcoded Authentication Service
+# Adding Hardcoded Authentication Service
 
 For adding a service class in the Angular we can use the ng command `ng generate service FOLDER/SERVICE_NAME`
 
@@ -617,7 +617,7 @@ export class LoginComponent implements OnInit {
 
 ---
 
-## Storing username to session storage
+# Storing username to session storage
 
 No let's store the username to the browser session storage and we will use this gor checking if the user is already logged in or not. Based on this we will show our menu item.
 
@@ -703,7 +703,7 @@ export class MenuComponent implements OnInit {
 
 ---
 
-## Implementing logout functionality
+# Implementing logout functionality
 
 1. Generate logout component
 2. Add routing in `app-routing.module.ts` file.
@@ -828,7 +828,7 @@ export class AppRoutingModule { }
 
 ---
 
-## User HttpClient to call external Service
+# User HttpClient to call external Service
 
 In this example we will just call a hello world service and show the response in the welocom.component.ts.
 
