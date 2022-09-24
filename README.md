@@ -828,7 +828,178 @@ export class AppRoutingModule { }
 
 ---
 
+## User HttpClient to call external Service
 
+In this example we will just call a hello world service and show the response in the welocom.component.ts.
 
+1. Create a WelcomeDataService using `ng generate service service/data/welcomeData`
 
+![image](https://user-images.githubusercontent.com/63965898/192089045-b0a939f8-9668-43aa-bc9e-06854eceded1.png)
+
+#### welcome-data.service.ts
+
+```ts
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http'
+
+export class HelloWorldBean {
+
+  constructor(public message : string) {}
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class WelcomeDataService {
+
+  constructor(private httpClient : HttpClient) { }
+
+  executeHellowWorldBeanService() {
+
+    //console.log("Inside executeHellowWorldBeanService()");
+    return this.httpClient.get<HelloWorldBean>('http://localhost:7879/hello-world');
+  }
+
+  executeHellowWorldBeanServiceWithPathVarable(name : string) {
+
+    return this.httpClient.get<HelloWorldBean>(`http://localhost:7879/hello-world/path-variable/${name}`);
+  }
+}
+```
+
+Here we are using HttpClient from Angular for GET request.
+We also need to add the HttpClientModule to `app.module.ts`
+
+#### app.module.ts
+
+```ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { WelcomeComponent } from './welcome/welcome.component';
+import { LoginComponent } from './login/login.component';
+import { FormsModule } from '@angular/forms';
+import { ErrorComponent } from './error/error.component';
+import { ListTodosComponent } from './list-todos/list-todos.component';
+import { MenuComponent } from './menu/menu.component';
+import { FooterComponent } from './footer/footer.component';
+import { LogoutComponent } from './logout/logout.component';
+import { HttpClientModule } from '@angular/common/http';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    WelcomeComponent,
+    LoginComponent,
+    ErrorComponent,
+    ListTodosComponent,
+    MenuComponent,
+    FooterComponent,
+    LogoutComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+#### welcome.component.ts
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { HelloWorldBean, WelcomeDataService } from '../service/data/welcome-data.service';
+
+@Component({
+  selector: 'app-welcome',
+  templateUrl: './welcome.component.html',
+  styleUrls: ['./welcome.component.css']
+})
+// this component implements an interface called OnInit, in which there is a mehtod called
+// ngOnInit() which will be called as soon as this component is initiaized
+export class WelcomeComponent implements OnInit {
+
+  userName = ''
+  welcomMessageFromService: string = ''
+
+  // ActivatedRoute
+  constructor(private route: ActivatedRoute, private welcomeDataService: WelcomeDataService
+  ) { }
+
+  ngOnInit(): void {
+
+    this.userName = this.route.snapshot.params['userName'];
+  }
+
+  getWelcomeMessage() {
+
+    //console.log("Inside getWelcomeMessage()")
+    //console.log(this.welcomeDataService.executeHellowWorldBeanService()); // this will give the observable object
+    //console.log(this.welcomeDataService.executeHellowWorldBeanService().subscribe()); // this will give the actual response
+
+    this.welcomeDataService.executeHellowWorldBeanService().subscribe({
+      next: (resposne) => this.handleSuccesfullResponse(resposne),
+      error: (error) => this.handleErrorResponse(error)
+    }
+    )
+  }
+
+  getWelcomeMessageWithParameter() {
+
+    this.welcomeDataService.executeHellowWorldBeanServiceWithPathVarable(this.userName).subscribe({
+      next: (resposne) => this.handleSuccesfullResponse(resposne),
+      error: (error) => this.handleErrorResponse(error)
+    }
+    )
+
+  }
+
+  handleSuccesfullResponse(response: HelloWorldBean) {
+
+    this.welcomMessageFromService = response.message;
+    console.log(response.message);
+  }
+
+  handleErrorResponse(error: any) {
+
+    console.log(error);
+    console.log(error.error)
+    this.welcomMessageFromService = 'Some Error has happened. Please contat at ***'
+  }
+
+}
+
+```
+
+#### welcome.component.html
+
+```html
+<h1>Welcome!</h1>
+
+<div class="container">
+
+    Welcome {{userName}}. You can manage your todos <a routerLink="/todos">here</a>
+
+</div>
+
+<div class="container">
+
+    Click here to get a customised welcome message.
+    <br>
+    <button (click)="getWelcomeMessageWithParameter()" class="btn btn-success">Get Welcome message</button>
+</div>
+
+<div class="container" *ngIf="welcomMessageFromService">
+    <h2>Your Customized Welocome message</h2>
+    {{welcomMessageFromService}}
+</div>
+```
 
