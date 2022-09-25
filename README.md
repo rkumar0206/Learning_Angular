@@ -1228,6 +1228,16 @@ export class TodoDataService {
 
 ```
 
+#### todo.component.css
+
+```css
+.ng-invalid:not(form){
+
+    border-left: 3px solid red;
+}
+```
+
+
 ![image](https://user-images.githubusercontent.com/63965898/192133505-0338b9a1-060e-480f-9b1a-be854e6c6c79.png)
 
 #### todo.component.ts
