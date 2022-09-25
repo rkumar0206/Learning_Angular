@@ -11,16 +11,27 @@ export class TodoDataService {
 
   retriveAllTodos(username : string) {
 
-    return this.httpClient.get<Todo[]>(`http://localhost:7879/users/${username}/todos`)
+    return this.httpClient.get<Todo[]>(`http://localhost:7879/users/${username}/todos`);
   }
 
   deleteTodo(username : string, id : any) {
 
-    return this.httpClient.delete(`http://localhost:7879/users/${username}/todos/${id}`)
+    return this.httpClient.delete(`http://localhost:7879/users/${username}/todos/${id}`);
   }
 
   retreiveTodo(username : string, id : any) {
 
-    return this.httpClient.get<Todo>(`http://localhost:7879/users/${username}/todos/${id}`)
+    return this.httpClient.get<Todo>(`http://localhost:7879/users/${username}/todos/${id}`);
   }
+
+  updateTodo(username: string, id : any, todo : Todo) {
+
+    return this.httpClient.put<Todo>(`http://localhost:7879/users/${username}/todos/${id}`, todo);
+  }
+
+  addTodo(username : string, todo : Todo) {
+
+    return this.httpClient.post<Todo>(`http://localhost:7879/users/${username}/todos`, todo);
+  }
+
 }
