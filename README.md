@@ -1003,3 +1003,300 @@ export class WelcomeComponent implements OnInit {
 </div>
 ```
 
+---
+
+# Finalysing TODO using CRUD requests
+
+#### list-todos.component.html
+
+```html
+<h1>My Todo's</h1>
+
+<div class="container">
+
+    <div class="alert alert-success" *ngIf='message'>{{message}}</div>
+
+    <table class="table">
+
+        <thead>
+
+            <tr>
+                <th>Description</th>
+                <th>Target Date</th>
+                <th>isCompleted?</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr *ngFor="let todo of todos">
+                <td>{{todo.description}}</td>
+                <td>{{todo.targetDate | date | uppercase}}</td>
+                <td>{{todo.completed}}</td>
+                <td><button (click)="updateTodo(todo.id)" class="btn btn-success">Update</button></td>
+                <td><button (click)="deleteTodo(todo.id)" class="btn btn-warning">Delete</button></td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <div class="row">
+        <button (click)="addTodo()" class="btn btn-success">Add</button>
+    </div>
+
+</div>
+```
+
+![image](https://user-images.githubusercontent.com/63965898/192133456-2a6ab462-59a9-462b-94e7-1dd68f5424c5.png)
+
+#### list-todos.component.ts
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { TodoDataService } from '../service/data/todo-data.service';
+
+export class Todo {
+
+  constructor(
+    public id : Number,
+    public description : String,
+    public completed : Boolean,
+    public targetDate : Date
+  ) {}
+}
+
+@Component({
+  selector: 'app-list-todos',
+  templateUrl: './list-todos.component.html',
+  styleUrls: ['./list-todos.component.css']
+})
+export class ListTodosComponent implements OnInit {
+
+  todos : Todo[] = []
+
+  message = '';
+
+  constructor(private todoService : TodoDataService, private router : Router) { }
+
+  ngOnInit(): void {
+    this.refreshTodos();
+  }
+
+  refreshTodos() {
+
+    this.todoService.retriveAllTodos("rtb").subscribe({
+      next : (response) => this.todos = response
+    })
+  }
+
+  deleteTodo(id : any) {
+
+    this.todoService.deleteTodo('rtb', id).subscribe({
+      next : (response) => {
+        this.message = `Delete of todo ${id} successful`;
+        this.refreshTodos();
+      }
+    })
+  }
+
+  updateTodo(id : any) {
+
+    console.log(`Update pressed with id : ${id}`)
+    this.router.navigate(['todos', id]);
+  }
+
+  addTodo() {
+
+    this.router.navigate(['todos',-1]);
+  }
+
+}
+
+```
+
+#### app-routing.module.ts
+
+```ts
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { ErrorComponent } from './error/error.component';
+import { ListTodosComponent } from './list-todos/list-todos.component';
+import { LoginComponent } from './login/login.component';
+import { LogoutComponent } from './logout/logout.component';
+import { RouterGaurdService } from './service/router-gaurd.service';
+import { TodoComponent } from './todo/todo.component';
+import { WelcomeComponent } from './welcome/welcome.component';
+
+const routes: Routes = [
+  { path: '', component: LoginComponent }, // at root path show the LoginComponent
+  { path: 'login', component: LoginComponent },
+  { path: 'welcome/:userName', component: WelcomeComponent, canActivate: [RouterGaurdService] }, // Welcome component will take a paramter i.e userName
+  { path: 'todos', component: ListTodosComponent, canActivate: [RouterGaurdService] },
+  { path: 'logout', component: LogoutComponent, canActivate: [RouterGaurdService] },
+  { path: 'todos/:id', component: TodoComponent, canActivate: [RouterGaurdService] },
+
+  { path: '**', component: ErrorComponent } // all the paths other than defined should route to ErrorComponent
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+
+```
+
+
+#### todo-data.service.ts
+
+```ts
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Todo } from 'src/app/list-todos/list-todos.component';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class TodoDataService {
+
+  constructor(private httpClient : HttpClient) { }
+
+  retriveAllTodos(username : string) {
+
+    return this.httpClient.get<Todo[]>(`http://localhost:7879/users/${username}/todos`);
+  }
+
+  deleteTodo(username : string, id : any) {
+
+    return this.httpClient.delete(`http://localhost:7879/users/${username}/todos/${id}`);
+  }
+
+  retreiveTodo(username : string, id : any) {
+
+    return this.httpClient.get<Todo>(`http://localhost:7879/users/${username}/todos/${id}`);
+  }
+
+  updateTodo(username: string, id : any, todo : Todo) {
+
+    return this.httpClient.put<Todo>(`http://localhost:7879/users/${username}/todos/${id}`, todo);
+  }
+
+  addTodo(username : string, todo : Todo) {
+
+    return this.httpClient.post<Todo>(`http://localhost:7879/users/${username}/todos`, todo);
+  }
+
+}
+
+```
+
+#### todo.component.html
+
+```html
+<h1>Todo</h1>
+
+<div class="container">
+
+    <div class="alert alert-warning" *ngIf="todoForm.dirty && todoForm.invalid">Please enter valid values</div>
+    <div class="alert alert-warning" *ngIf="todoForm.dirty && description.invalid">Description cannot be empty</div>
+    <div class="alert alert-warning" *ngIf="todoForm.dirty && targetDate.invalid">Please enter valid date</div>
+
+    <form (ngSubmit)="!todoForm.invalid && saveTodo()" #todoForm="ngForm">
+
+        <fieldset class="form-group">
+            <label for="description">Description</label>
+            <input type="text" [(ngModel)]="todo.description" #description="ngModel" name="description" required="required" class="form-control">
+        </fieldset>
+
+        <!--ngModel is made of two directives 1. [ngModel] and (ngModelChang)-->
+        <fieldset class="form-group">
+            <label for="targetDate">Description</label>
+            <input type="date"
+            [ngModel]="todo.targetDate | date:'yyyy-MM-dd'"
+            (ngModelChange)="todo.targetDate = $event"
+            name="targetDate" required="required" class="form-control" #targetDate="ngModel">
+        </fieldset>
+
+        <button type="submit" class="btn btn-success">Save</button>
+
+    </form>
+</div>
+
+```
+
+![image](https://user-images.githubusercontent.com/63965898/192133505-0338b9a1-060e-480f-9b1a-be854e6c6c79.png)
+
+#### todo.component.ts
+
+```ts
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Todo } from '../list-todos/list-todos.component';
+import { TodoDataService } from '../service/data/todo-data.service';
+
+@Component({
+  selector: 'app-todo',
+  templateUrl: './todo.component.html',
+  styleUrls: ['./todo.component.css']
+})
+export class TodoComponent implements OnInit {
+
+  id: number = -1;
+  todo: Todo = {} as Todo;
+  currDate = new Date()
+  minDate = `${this.currDate.getFullYear()}-${this.currDate.getMonth}-${this.currDate.getDay()}`;
+
+  constructor(
+    private todoService: TodoDataService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router
+  ) { }
+
+  ngOnInit(): void {
+
+    this.id = this.activatedRoute.snapshot.params["id"];
+    this.todo = new Todo(this.id, '', false, new Date())
+
+    if (this.id != -1) {
+      this.todoService.retreiveTodo('rtb', this.id).subscribe({
+        next: (response) => {
+          this.todo = response;
+        }
+      })
+    }
+  }
+
+  saveTodo() {
+
+    if (this.todo.id === -1) {
+
+      //add new todo
+
+      this.todoService.addTodo('rtb', this.todo).subscribe({
+
+        next: (response) => {
+          console.log(response)
+          this.router.navigate(['todos'])
+        }
+      })
+
+    } else {
+
+      // update todo
+      this.todoService.updateTodo('rtb', this.id, this.todo).subscribe({
+        next: (response) => {
+          console.log(response)
+          this.router.navigate(['todos'])
+        }
+      })
+    }
+  }
+
+}
+
+```
+
