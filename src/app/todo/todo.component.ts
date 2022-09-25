@@ -12,6 +12,8 @@ export class TodoComponent implements OnInit {
 
   id: number = -1;
   todo: Todo = {} as Todo;
+  currDate = new Date()
+  minDate = `${this.currDate.getFullYear()}-${this.currDate.getMonth}-${this.currDate.getDay()}`;
 
   constructor(
     private todoService: TodoDataService,
