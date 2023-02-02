@@ -1,3 +1,34 @@
+# RoadMap for learing Angular
+Here is a roadmap for learning Angular:
+
+1. Get familiar with HTML, CSS, and JavaScript: Angular is built with these technologies, so a good understanding of them is essential.
+
+2. Learn TypeScript: Angular is written in TypeScript, so it's important to understand the basics of this language.
+
+3. Get an understanding of web development concepts: Angular is a front-end framework, so a basic understanding of web development concepts such as HTTP, REST APIs, and JSON is important.
+
+4. Study the Angular documentation: The Angular documentation is comprehensive and provides a good introduction to the framework and its concepts.
+
+5. Start with the basics: Learn about modules, components, templates, data binding, and services.
+
+6. Learn how to use the Angular CLI: The Angular CLI is a tool that makes it easier to develop, test, and deploy Angular applications.
+
+7. Learn how to work with forms and form validation in Angular.
+
+8. Study the Router: Learn how to configure routes, navigate between routes, and pass parameters to components.
+
+9. Learn about observables and reactive programming: Angular makes heavy use of observables and reactive programming, so it's important to understand these concepts.
+
+10. Study Angular animations: Angular provides a way to add animations to your application.
+
+11. Learn how to use Angular with a backend API: Angular can be used to build full-stack applications.
+
+12. Study advanced topics: Once you have a solid understanding of the basics, you can study more advanced topics such as lazy loading, guards, and custom directives.
+
+13. Build real-world applications: The best way to solidify your learning is to build real-world applications using Angular.
+
+---
+
 # Todo
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.3.
